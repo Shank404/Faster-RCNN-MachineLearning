@@ -20,7 +20,7 @@ clear all; close all;
 % dataStorePicturePath = 'C:\Users\tas\Desktop\211202 Mat DeepLearning Examples Razor\eTrafficSignsData\SS21TrafficSigns224_224_3\Pictures\30GBS'
 % dataStoreLabelPath = 'C:\Users\tas\Desktop\211202 Mat DeepLearning Examples Razor\eTrafficSignsData\SS21TrafficSigns224_224_3\Labels\30GBS'
 dataStorePicturePath ="Pictures_1024_768"
-dataStoreLabelPath ="Labels_1024_768"
+dataStoreLabelPath = "Labels_1024_768"
 labelDS = imageDatastore(dataStoreLabelPath, 'IncludeSubfolders', true);
 pictureDS = imageDatastore(dataStorePicturePath, 'IncludeSubfolders', true);
 
@@ -86,7 +86,8 @@ for i = 1:pictureCount
     end
     
     a = num2cell(box, 2);
-    signDataset(shuffeldIndex,:) = {imPic_INFO.Filename,a};
+    %signDataset(shuffeldIndex,:) = {imPic_INFO.Filename,a};
+    signDataset(shuffeldIndex,:) = {extractAfter(imPic_INFO.Filename, 'Projekt\'),a};
     
     % display one of the training images and box labels.
     if (i == 4)

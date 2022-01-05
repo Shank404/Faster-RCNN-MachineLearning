@@ -1,9 +1,11 @@
 close all
 clear
-doTraining = false;
+doTraining = false; %true; %false ;
 
 % ----- Laden der Daten
-imageDS = imageDatastore('Pictures_1024_768',"IncludeSubfolders",true,"LabelSource","foldernames");
+imageDS = imageDatastore('Pictures_1024_768',...
+        "IncludeSubfolders",true,...
+        "LabelSource","foldernames");
 dataVec = load('signDatasetGroundTruth.mat');  % 
 signDatasetTbl = dataVec.signDataset;  % 1125*2 table
 
@@ -46,7 +48,7 @@ figure
 imshow(annotatedImage)
 
 % ----- Erstellung des Faster Regionbased Convolutional Neuronal Network
-inputSize = [768 1024 3];
+inputSize = [224 224 3]; %[768 1024 3];
 
 preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
 % Achtung: dieser DS wird nur zur Ermittlung der anchorBoxes verwendet
@@ -70,7 +72,7 @@ anchorBoxes = estimateAnchorBoxes(preprocessedTrainingData,numAnchors)
 % ----- und das feature CNN
 featureExtractionNetwork = resnet50;
 featureLayer = 'activation_40_relu';
-numClasses = width(signDataset)-1;    % also hier: 1, es sollen nur Autos erkannt werden
+numClasses = width(signDataset)-1;    % also hier: 1, es sollen nur Schilder erkannt werden
 lgraph = fasterRCNNLayers(inputSize,numClasses,anchorBoxes,featureExtractionNetwork,featureLayer);
 
 % ----- Netzwerk ansehen
@@ -81,7 +83,7 @@ augmentedTrainingData = transform(trainingDataDS,@augmentData);
 trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
 validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
 options = trainingOptions('sgdm',...
-    'MaxEpochs',10,...
+    'MaxEpochs',10,...  % hier reichen wahrscheinlich auch 5
     'MiniBatchSize',2,...
     'InitialLearnRate',1e-3,...
     'CheckpointPath',tempdir,...
@@ -101,8 +103,9 @@ else
 end
 
 % ----- quick check/test
-I = imread(testDataTbl.imageFilename{3});
-I = imresize(I,inputSize(1:2));
+showIndx = floor(rand()*length(testDataTbl.imageFilename)) % Für zufälliges Bild
+I = imread(testDataTbl.imageFilename{showIndx});   %I = imread(testDataTbl.imageFilename{3});
+%I = imresize(I,inputSize(1:2));    % Nicht resizen, sonst passen die Koordinaten des Rechtecks nicht mehr
 [bboxes,scores] = detect(detector,I);
 
 % ----- Ausgabe der Ergebnisse

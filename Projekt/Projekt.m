@@ -2,51 +2,42 @@ close all
 clear
 doTraining = false;
 
-% ----- load Data
+% ----- Laden der Daten
 imageDS = imageDatastore('Pictures_1024_768',"IncludeSubfolders",true,"LabelSource","foldernames");
 dataVec = load('signDatasetGroundTruth.mat');  % 
-signDataset = dataVec.signDataset;  % 1125*2 table
+signDatasetTbl = dataVec.signDataset;  % 1125*2 table
 
-% ----- split the dataset into training, validation, and test sets.
-% Select 60% of the data for training, 10% for validation, and the
-% rest for testing the trained detector
+% ----- Aufteilung der Daten => 60% Training, 10% Validierung, 30% Testen  
 rng(0)
-shuffledIndices = randperm(height(signDataset));
-idx = floor(0.6 * height(signDataset));
+shuffledIndicesVec = randperm(height(signDatasetTbl));
+idxVec = floor(0.6 * height(signDatasetTbl));
 
-trainingIdx = 1:idx;
-trainingDataTbl = signDataset(shuffledIndices(trainingIdx),:);
+trainingIdxVec = 1:idxVec;
+trainingDataTbl = signDatasetTbl(shuffledIndicesVec(trainingIdxVec),:);
 
-validationIdx = idx+1 : idx + 1 + floor(0.1 * length(shuffledIndices) );
-validationDataTbl = signDataset(shuffledIndices(validationIdx),:);
+validationIdxVec = idxVec+1 : idxVec + 1 + floor(0.1 * length(shuffledIndicesVec) );
+validationDataTbl = signDatasetTbl(shuffledIndicesVec(validationIdxVec),:);
 
-testIdx = validationIdx(end)+1 : length(shuffledIndices);
-testDataTbl = signDataset(shuffledIndices(testIdx),:);
+testIdxVec = validationIdxVec(end)+1 : length(shuffledIndicesVec);
+testDataTbl = signDatasetTbl(shuffledIndicesVec(testIdxVec),:);
 
-% ----- use imageDatastore and boxLabelDatastore to create datastores
-% for loading the image and label data during training and evaluation.
+% ----- Erzeugen der einzelnen Datastores, welche dann für das Training, die Validierung und zum Testen verwendet werden.
+imdsTrainDS = imageDatastore(trainingDataTbl{:,'imageFilename'});
+bldsTrainDS = boxLabelDatastore(trainingDataTbl(:,'sign'));
 
-imdsTrain = imageDatastore(trainingDataTbl{:,'imageFilename'});
-bldsTrain = boxLabelDatastore(trainingDataTbl(:,'sign'));
+imdsValidationDS = imageDatastore(validationDataTbl{:,'imageFilename'});
+bldsValidationDS = boxLabelDatastore(validationDataTbl(:,'sign'));
 
-imdsValidation = imageDatastore(validationDataTbl{:,'imageFilename'});
-bldsValidation = boxLabelDatastore(validationDataTbl(:,'sign'));
+imdsTestDS = imageDatastore(testDataTbl{:,'imageFilename'});
+bldsTestDS = boxLabelDatastore(testDataTbl(:,'sign'));
 
-imdsTest = imageDatastore(testDataTbl{:,'imageFilename'});
-bldsTest = boxLabelDatastore(testDataTbl(:,'sign'));
+% ----- Kombination der Image- und LabelBox-Datastores
+trainingDataDS = combine(imdsTrainDS,bldsTrainDS); % erzeugt 'CombinedDatastore
+validationDataDS = combine(imdsValidationDS,bldsValidationDS);
+testDataDS = combine(imdsTestDS,bldsTestDS);
 
-
-% combine image and box label datastores.
-
-trainingData = combine(imdsTrain,bldsTrain); % erzeugt 'CombinedDatastore
-validationData = combine(imdsValidation,bldsValidation);
-testData = combine(imdsTest,bldsTest);
-
-
-
-% display one of the training images and box labels.
-
-data = read(trainingData); %EVENTUELL ZUWEISEN
+% ----- Ausgabe eines Bildes mit LabelBox
+data = read(trainingDataDS); %EVENTUELL ZUWEISEN
 I = data{1};
 bbox = data{2};
 annotatedImage = insertShape(I,'Rectangle',bbox);
@@ -54,12 +45,10 @@ annotatedImage = imresize(annotatedImage,4);  % nur fuer Darstellung
 figure
 imshow(annotatedImage)
 
-
-
-% ----- Create Faster R-CNN Detection Network
+% ----- Erstellung des Faster Regionbased Convolutional Neuronal Network
 inputSize = [768 1024 3];
 
-preprocessedTrainingData = transform(trainingData, @(data)preprocessData(data,inputSize));
+preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
 % Achtung: dieser DS wird nur zur Ermittlung der anchorBoxes verwendet
 
 % % display one of the training images and box labels.
@@ -74,41 +63,35 @@ preprocessedTrainingData = transform(trainingData, @(data)preprocessData(data,in
 %     pause(0.100)
 % end
 
-% Auswahl der anchor boxes
-%   Infos dazu: https://de.mathworks.com/help/vision/ug/estimate-anchor-boxes-from-training-data.html
+% ----- Ermittlung der Anchor-boxes
 numAnchors = 3;
 anchorBoxes = estimateAnchorBoxes(preprocessedTrainingData,numAnchors)
 
-% und das feature CNN
+% ----- und das feature CNN
 featureExtractionNetwork = resnet50;
 featureLayer = 'activation_40_relu';
 numClasses = width(signDataset)-1;    % also hier: 1, es sollen nur Autos erkannt werden
-
 lgraph = fasterRCNNLayers(inputSize,numClasses,anchorBoxes,featureExtractionNetwork,featureLayer);
 
-% Netzwerk ansehen
+% ----- Netzwerk ansehen
 % analyzeNetwork(lgraph) 
 
-
-% Augmentierung
-augmentedTrainingData = transform(trainingData,@augmentData);
-
-trainingData = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
-validationData = transform(validationData,@(data)preprocessData(data,inputSize));
-
+% ----- Augmentierung der Daten
+augmentedTrainingData = transform(trainingDataDS,@augmentData);
+trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
+validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
 options = trainingOptions('sgdm',...
     'MaxEpochs',10,...
     'MiniBatchSize',2,...
     'InitialLearnRate',1e-3,...
     'CheckpointPath',tempdir,...
-    'ValidationData',validationData);
-
+    'ValidationData',validationDataDS);
 
 if doTraining
     % Train the Faster R-CNN detector.
     % * Adjust NegativeOverlapRange and PositiveOverlapRange to ensure
     %   that training samples tightly overlap with ground truth.
-    [detector, info] = trainFasterRCNNObjectDetector(trainingData,lgraph,options, ...
+    [detector, info] = trainFasterRCNNObjectDetector(trainingDataDS,lgraph,options, ...
         'NegativeOverlapRange',[0 0.3], ...
         'PositiveOverlapRange',[0.6 1]);
     save netDetectorResNet50.mat detector;
@@ -122,22 +105,19 @@ I = imread(testDataTbl.imageFilename{3});
 I = imresize(I,inputSize(1:2));
 [bboxes,scores] = detect(detector,I);
 
-% Display the results.
+% ----- Ausgabe der Ergebnisse
 I = insertObjectAnnotation(I,'rectangle',bboxes,scores);
 figure
 imshow(I)
 
-% ----- Testing
+% ----- Testen des Neuronalen Netzes
+testDataDS = transform(testDataDS,@(data)preprocessData(data,inputSize));
 
-testData = transform(testData,@(data)preprocessData(data,inputSize));
+% ----- Teste das Neuronale Netz mit den Testbildern
+detectionResults = detect(detector,testDataDS,'MinibatchSize',1); 
 
-% Run the detector on all the test images.
-
-detectionResults = detect(detector,testData,'MinibatchSize',1); 
-
-% Evaluate the object detector using the average precision metric.
-
-[ap, recall, precision] = evaluateDetectionPrecision(detectionResults,testData);
+% ----- Auswertung des Detektors mithilfe der durschnittlichen Präzision
+[ap, recall, precision] = evaluateDetectionPrecision(detectionResults,testDataDS);
 % The precision/recall (PR) curve highlights how precise a detector is at varying levels of recall. The ideal precision is 1 at all recall levels. The use of more data can help improve the average precision but might require more training time. Plot the PR curve.
 
 figure
@@ -148,7 +128,7 @@ grid on
 title(sprintf('Average Precision = %.2f', ap))
 
 
-% ----- Helper functions
+% ----- Hilfsfunktionen
 
 function data = augmentData(data)
 % Randomly flip images and bounding boxes horizontally.

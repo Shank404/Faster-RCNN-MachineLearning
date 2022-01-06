@@ -16,7 +16,7 @@ imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','f
 
 % ----- Augmentation
 
-outputSize = [227 277 3]; % [28 28 1];
+outputSize = [227 227 3]; % [28 28 1];
 imageAugmenter = imageDataAugmenter( ...
     'RandRotation',[-50,50], ...
     'RandXTranslation',[-5 5], ...
@@ -45,7 +45,7 @@ layers = [
     batchNormalizationLayer
     reluLayer
     
-    fullyConnectedLayer(10)
+    fullyConnectedLayer(5)
     softmaxLayer
     classificationLayer
 ];

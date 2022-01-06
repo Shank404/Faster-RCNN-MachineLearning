@@ -1,6 +1,6 @@
 close all
 clear
-doTraining = true; %true; %false ;
+doTraining = false ;
 
 % ----- Laden der Bild-Daten ----- %
 imageDS = imageDatastore('Pictures_1024_768',...
@@ -52,7 +52,7 @@ figure
 imshow(annotatedImage)
 
 % ----- Erstellung des Faster Regionbased Convolutional Neuronal Network ----- %
-inputSize = [224 224 3]; %[768 1024 3];
+inputSize = [448 448 3]; %[768 1024 3];
 
 preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
 % Achtung: dieser DS wird nur zur Ermittlung der anchorBoxes verwendet
@@ -87,8 +87,8 @@ augmentedTrainingData = transform(trainingDataDS,@augmentData);
 trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
 validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
 options = trainingOptions('sgdm',...
-    'MaxEpochs',10,...  % hier reichen wahrscheinlich auch 5
-    'MiniBatchSize',2,...
+    'MaxEpochs',12,...  % hier reichen wahrscheinlich auch 5
+    'MiniBatchSize',1,...
     'InitialLearnRate',1e-3,...
     'CheckpointPath',tempdir,...
     'ValidationData',validationDataDS);
@@ -97,9 +97,9 @@ if doTraining
     % Train the Faster R-CNN detector.
     % * Adjust NegativeOverlapRange and PositiveOverlapRange to ensure
     %   that training samples tightly overlap with ground truth.
-    [detector, info] = trainFasterRCNNObjectDetector(trainingDataDS,lgraph,options, ...
-        'NegativeOverlapRange',[0 0.3], ...
-        'PositiveOverlapRange',[0.6 1]);
+    [detector, info] = trainFasterRCNNObjectDetector(trainingDataDS,lgraph,options); %, ...
+        %'NegativeOverlapRange',[0 0.3], ...
+        %'PositiveOverlapRange',[0.6 1]);
     save netDetectorResNet50.mat detector;
 else
     % Load pretrained detector for the example.

@@ -112,6 +112,8 @@ end
 fprintf('Picture count: %d\n', n);
 end
 
+
+
 % layersTommy = [  imageInputLayer([28 28 1])
 %     
 %             convolution2dLayer(5,20)        % 5*5 Kernel, 20 Kernels
@@ -124,3 +126,4 @@ end
 %             softmaxLayer()
 %             classificationLayer()
 %          ];
+save netDetectorClassification.mat detector;

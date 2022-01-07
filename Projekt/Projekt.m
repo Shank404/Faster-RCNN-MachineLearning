@@ -1,6 +1,6 @@
 close all
 clear
-doTraining = false ;
+doTraining = true; %false ;
 
 % ----- Laden der Bild-Daten ----- %
 imageDS = imageDatastore('Pictures_1024_768',...
@@ -47,14 +47,17 @@ data = read(trainingDataDS); %EVENTUELL ZUWEISEN
 I = data{1};
 bbox = data{2};
 annotatedImage = insertShape(I,'Rectangle',bbox);
-annotatedImage = imresize(annotatedImage,4);  % nur fuer Darstellung
+%annotatedImage = imresize(annotatedImage,1);  % nur fuer Darstellung vergrößern
 figure
 imshow(annotatedImage)
 
 % ----- Erstellung des Faster Regionbased Convolutional Neuronal Network ----- %
-inputSize = [448 448 3]; %[768 1024 3];
+inputSize =  [448 448 3]; %[384 512 3]; % [768 1024 3];
 
-preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
+if doTraining
+    preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
+    % Bilder werden auf die input Size skalliert
+
 % Achtung: dieser DS wird nur zur Ermittlung der anchorBoxes verwendet
 
 % % display one of the training images and box labels.
@@ -69,31 +72,31 @@ preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,
 %     pause(0.100)
 % end
 
-% ----- Ermittlung der Anchor-boxes ----- %
-numAnchors = 3;
-anchorBoxes = estimateAnchorBoxes(preprocessedTrainingData,numAnchors)
+    % ----- Ermittlung der Anchor-boxes ----- %
+    numAnchors = 3;
+    anchorBoxes = estimateAnchorBoxes(preprocessedTrainingData,numAnchors)
 
-% ----- und das feature CNN ----- %
-featureExtractionNetwork = resnet50;
-featureLayer = 'activation_40_relu';
-numClasses = width(signDatasetTbl)-1;    % also hier: 1, es sollen nur Schilder erkannt werden
-lgraph = fasterRCNNLayers(inputSize,numClasses,anchorBoxes,featureExtractionNetwork,featureLayer);
+    % ----- und das feature CNN ----- %
+    featureExtractionNetwork = resnet50;
+    featureLayer = 'activation_40_relu';
+    numClasses = width(signDatasetTbl)-1;    % also hier: 1, es sollen nur Schilder erkannt werden
+    lgraph = fasterRCNNLayers(inputSize,numClasses,anchorBoxes,featureExtractionNetwork,featureLayer);
 
-% ----- Netzwerk ansehen ----- %
-% analyzeNetwork(lgraph) 
+    % ----- Netzwerk ansehen ----- %
+    % analyzeNetwork(lgraph) 
 
-% ----- Augmentierung der Daten ----- %
-augmentedTrainingData = transform(trainingDataDS,@augmentData);
-trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
-validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
-options = trainingOptions('sgdm',...
-    'MaxEpochs',12,...  % hier reichen wahrscheinlich auch 5
-    'MiniBatchSize',1,...
-    'InitialLearnRate',1e-3,...
-    'CheckpointPath',tempdir,...
-    'ValidationData',validationDataDS);
+    % ----- Augmentierung der Daten ----- %
+    augmentedTrainingData = transform(trainingDataDS,@augmentData); %u.a. horizontales spiegeln (siehe Funkton unten). Das ist vielleicht keine gute Idee !!
+    trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
+    validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
+    
+    options = trainingOptions('sgdm',...
+        'MaxEpochs',12,...  % hier reichen wahrscheinlich auch 5
+        'MiniBatchSize',1,...
+        'InitialLearnRate',1e-3,...
+        'CheckpointPath',tempdir,...
+        'ValidationData',validationDataDS);
 
-if doTraining
     % Train the Faster R-CNN detector.
     % * Adjust NegativeOverlapRange and PositiveOverlapRange to ensure
     %   that training samples tightly overlap with ground truth.
@@ -108,7 +111,7 @@ end
 
 % ----- quick check/test ----- %
 showIndx = floor(rand()*length(testDataTbl.imageFilename)) % Für zufälliges Bild
-I = imread(testDataTbl.imageFilename{showIndx});   %I = imread(testDataTbl.imageFilename{3});
+I = imread(testDataTbl.imageFilename{12});   %I = imread(testDataTbl.imageFilename{3});
 %I = imresize(I,inputSize(1:2));    % Nicht resizen, sonst passen die Koordinaten des Rechtecks nicht mehr
 [bboxes,scores] = detect(detector,I);
 
@@ -133,7 +136,24 @@ xlabel('Recall')
 ylabel('Precision')
 grid on
 title(sprintf('Average Precision = %.2f', ap))
+%   Je größer das Integral unterm Graph, desto besser ist das Netz
 
+% ----- Speichern der erkannten Schilder ----- %
+disp('Start storing images');
+basePath = 'SignsFound';
+for i = 1:length(testDataTbl.imageFilename)-1
+    img = imread(testDataTbl.imageFilename{i});
+    [bboxes,scores] = detect(detector,img);
+    rowBBoxes = size(bboxes);
+    for j = 1:rowBBoxes(1)
+        signImg = imcrop(img, [ bboxes(1*j) bboxes(2*j) bboxes(3*j) bboxes(4*j) ] );
+        %figure('Name',testDataTbl.imageFilename{i},'NumberTitle', 'off');
+        %imshow(signImg)
+        if ~isempty(signImg)
+            imwrite(signImg, fullfile(basePath, strcat(num2str(i),'_',num2str(j),'_', replace(replace(testDataTbl.imageFilename{i},'Pictures_1024_768',''),'\',''), '.jpg') ));
+        end
+    end
+end
 
 % ----- Hilfsfunktionen ----- %
 

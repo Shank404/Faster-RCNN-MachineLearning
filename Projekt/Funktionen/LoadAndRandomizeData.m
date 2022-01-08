@@ -1,9 +1,8 @@
-function [trainingDataDS,validationDataDS, testDataDS, testDataTbl] = LoadAndRandomizeData()
+function [trainingDataDS,validationDataDS, testDataDS, testDataTbl, signDatasetTbl] = LoadAndRandomizeData(inputSize)
 % ----- Laden der Daten
 imageDS = imageDatastore('Pictures_1024_768',"IncludeSubfolders",true,"LabelSource","foldernames");
 dataVec = load('signDatasetGroundTruth.mat');  % 
 signDatasetTbl = dataVec.signDataset;  % 1125*2 table
-
 % ----- Aufteilung der Daten => 60% Training, 10% Validierung, 30% Testen  
 rng(0)
 shuffledIndicesVec = randperm(height(signDatasetTbl));
@@ -32,10 +31,10 @@ bldsTestDS = boxLabelDatastore(testDataTbl(:,'sign'));
 trainingDataDS = combine(imdsTrainDS,bldsTrainDS); % erzeugt 'CombinedDatastore
 validationDataDS = combine(imdsValidationDS,bldsValidationDS);
 testDataDS = combine(imdsTestDS,bldsTestDS);
+data = read(trainingDataDS); %einlesen des DataStores
 
 augmentedTrainingData = transform(trainingDataDS,@augmentData);
 trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
 validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
-
 end
 

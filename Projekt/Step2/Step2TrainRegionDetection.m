@@ -1,20 +1,20 @@
 close all
 clear
-[trainingDataDS,validationDataDS, testDataDS, testDataTbl] = LoadAndRandomizeData();
+
+
 
 % ----- Ausgabe eines Bildes mit LabelBox ----- %
-data = read(trainingDataDS); %einlesen des DataStores
 % inputSize definieren, mit der die Bilder eingelesen werden
 % notwendig um Speicher der Grafikkarte nicht zu überladen
-inputSize =  [384 512 3]; % [448 448 3]; %[768 1024 3];
-
+inputSize = [448 448 3]; %[768 1024 3];
+[trainingDataDS,validationDataDS, testDataDS, testDataTbl, signDatasetTbl] = LoadAndRandomizeData(inputSize);
 % ----- Augmentierung der Daten ----- %
-augmentedTrainingData = transform(trainingDataDS,@funcAugmentData); %u.a. horizontales spiegeln (siehe Funkton unten). Das ist vielleicht keine gute Idee !!
-trainingDataDS = transform(augmentedTrainingData,@(data)funcPreprocessData(data,inputSize));
-validationDataDS = transform(validationDataDS,@(data)funcPreprocessData(data,inputSize));
+augmentedTrainingData = transform(trainingDataDS,@augmentData); %u.a. horizontales spiegeln (siehe Funkton unten). Das ist vielleicht keine gute Idee !!
+trainingDataDS = transform(augmentedTrainingData,@(data)preprocessData(data,inputSize));
+validationDataDS = transform(validationDataDS,@(data)preprocessData(data,inputSize));
 
 % ----- Erstellung des Faster Regionbased Convolutional Neuronal Network ----- %
-preprocessedTrainingData = transform(trainingDataDS, @(data)funcPreprocessData(data,inputSize));
+preprocessedTrainingData = transform(trainingDataDS, @(data)preprocessData(data,inputSize));
 % Bilder werden auf die input Size skalliert
 
 % ----- Ermittlung der Anchor-boxes ----- %
@@ -25,7 +25,17 @@ anchorBoxes = estimateAnchorBoxes(preprocessedTrainingData,numAnchors);
 featureExtractionNetwork = resnet50;
 featureLayer = 'activation_40_relu';
 numClasses = width(signDatasetTbl)-1;    % Kategorien, die erkannt werden sollen ( hier 1: Schilder )
+
 lgraph = fasterRCNNLayers(inputSize,numClasses,anchorBoxes,featureExtractionNetwork,featureLayer);
+
+layersTransfer = featureExtractionNetwork.Layers(1:end-3);
+layers = [
+    layersTransfer
+    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',20,...
+        'BiasLearnRateFactor',20)
+    softmaxLayer
+    classificationLayer];
+
 
 % analyzeNetwork(lgraph) % ----- Netzwerk ansehen ----- %
    

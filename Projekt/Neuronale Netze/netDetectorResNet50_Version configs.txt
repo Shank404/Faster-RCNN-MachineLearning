@@ -1,4 +1,15 @@
------  v3  -----
+-----  v4_16-9  -----	--> avg Precision: 69%
+inputSize =  [384 512 3]
+idx = 450 (40 %)
+validationData: 0.4
+options = trainingOptions('sgdm',...
+        'MaxEpochs',13,...
+        'MiniBatchSize',1,...
+        'InitialLearnRate',5e-4,...
+        'CheckpointPath',tempdir,...
+        'ValidationData',validationDataDS);
+[detector, info] = trainFasterRCNNObjectDetector(trainingDataDS,lgraph,options);
+
 -----  v3  -----	--> avg Precision: 74%
 inputSize = [448, 448, 3]
 idx = 337

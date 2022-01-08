@@ -1,6 +1,6 @@
-% Train CNN Netz
+% Trainieren des AlexNet
 close all
-clear 
+clear
 
 % Variablen zur Verteilung der Daten
 amountTrain = 0.5;                                  %Anzahl der Trainingsdaten
@@ -15,57 +15,53 @@ validationFrequency = 30;                           %Defaultwert 50
 
 % Einlesen der erkannten Schilder
 imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');
+fprintf("Anzahl Bilder: %d\n", length(imageDS.Labels));
 
-% Aufteilung der Bilder in Trainingdatastores, Validationdatastores und Testdatastores
+rng(7);
 [trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
+fprintf("Trainingsmenge Anzahl Elemente: %d  Test(Validierungs)menge: %d\n", length(trainingImageDS.Labels), length(validationImageDS.Labels));
 
-% ----- Augmentation
+% Das Alexnet laden und in net speichern
+net = alexnet;
+
+% Augmentation definieren und durchführen
 outputSize = [227 227 3];
 
-% ----- Augmentation definieren und druchführen
 imageAugmenter = imageDataAugmenter( ...
-                'RandRotation', [-30 30], ...
+                'RandRotation', [-45 45], ...
                 'RandXTranslation', [-4 4], ....
                 'RandYTranslation', [-4 4]);
 trainingImageAugDS = augmentedImageDatastore(outputSize, trainingImageDS, 'DataAugmentation',imageAugmenter);
 validationImageAugDS = augmentedImageDatastore(outputSize, validationImageDS, 'DataAugmentation',imageAugmenter);
 
-% ----- einfaches DeepLearning Netzwerk definieren
+
+% Definierunbg des Netzwerks
+layersTransfer = net.Layers(1:end-3);
+numClasses = numel(categories(trainingImageDS.Labels));
 layers = [
-    imageInputLayer(outputSize)
-
-    convolution2dLayer(3,8,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-
-    maxPooling2dLayer(2,'Stride',2)
-
-    convolution2dLayer(3,16,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-
-    maxPooling2dLayer(2,'Stride',2)
-
-    convolution2dLayer(3,32,'Padding','same')
-    batchNormalizationLayer
-    reluLayer
-
-    fullyConnectedLayer(5)
+    layersTransfer
+    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',20,...
+        'BiasLearnRateFactor',20)
     softmaxLayer
-    classificationLayer
-];
+    classificationLayer];
 
-% ----- Training
+% Trainingsoptionen
 options = trainingOptions('sgdm',...
-    'InitialLearnRate', initialLearnRate,...
-    'MaxEpochs',maxEpochs, ...                    
-    'MiniBatchSize',miniBatchSize,...
-    'ValidationData', validationImageAugDS,...  % validationImageDS oder validationImageAugDS
-    'ValidationFrequency',validationFrequency,...
-    'Verbose',false,...
+    'MiniBatchSize',miniBatchSize, ...
+    'MaxEpochs',maxEpochs, ...
+    'InitialLearnRate',initialLearnRate, ... 
+    'ValidationData',validationImageAugDS, ...
+    'ValidationFrequency',validationFrequency, ...
+    'ValidationPatience', 5, ...
+    'Verbose',false, ...
     'Plots','training-progress');
 
-net = trainNetwork(trainingImageAugDS,layers,options);  % trainingImageDS oder trainingImageAugDS
+netTransfer = trainNetwork(trainingImageAugDS,layers,options);
 
-% speichern des trainierten Netzes 
-save netClassification.mat net;
+% besser waere ein abschlissendes Testen mit´neuen´ Daten
+%  und nicht mit den Validierungsdaten 
+YPred = classify(netTransfer, validationImageAugDS);
+accuracy = mean(YPred == validationImageDS.Labels)
+
+% Speichern des trainierten Netzes
+save 'Neuronale Netze\netAlexClassification.mat' netTransfer;

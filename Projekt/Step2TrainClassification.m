@@ -1,11 +1,7 @@
 % Train CNN Netz
 
 close all
-clear
-
-% falls die imageDataStore Directories nicht vorhanden sind: einmalig: 
-% generateImageDataStoreFilesFunc('Train', 1);  % 1 => 166; 50 => 5000
-% generateImageDataStoreFilesFunc('Full', 50);  
+clear 
 
 % Einlesen der erkannten Schilder
 imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
@@ -61,37 +57,6 @@ options = trainingOptions('sgdm',...
     'Plots','training-progress');
 
 net = trainNetwork(trainingImageAugDS,layers,options);  % trainingImageDS oder trainingImageAugDS
+
+% speichern des trainierten Netzes 
 save netClassification.mat net;
-
-function generateImageDataStoreFilesFunc(name, absAngle)
-
-[XTrain, YTrain, angles] = digitTrain4DArrayData;
-% XTrain is 4-D Array: H-by-W-by-C-by-N array, where H is the
-%     height and W is the width of the images, C is the number
-%     of channels, and N is the number of images
-% YTrain is Categorical vector containing the labels for each observation
-% angles is Numeric vector containing the angle of rotation in
-%   degrees for each image.
-%
-% XTrain konkret: 28 (height) * 28 (width) * 1 (channel) * 5000 (images)
-%
-name
-
-for n = 0:9
-    a = strcat(name, "\Ziffer", string(n))
-    mkdir(char(a))    
-end
-
-n = 0;
-for k=1:5000
-    if (abs(angles(k)) <= absAngle)
-        n = n + 1;
-        strZif = char('Ziffer' + string(YTrain(k)));
-        strArg = strcat(name, '\', strZif, '\', strZif, string(k), '.png')
-        a = XTrain(:,:,1,k);
-        imwrite(a, char(strArg));
-    end
-end
-
-fprintf('Picture count: %d\n', n);
-end

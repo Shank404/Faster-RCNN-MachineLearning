@@ -1,4 +1,4 @@
-% Test CNN Netz
+% Test Alex Netz
 close all
 clear
 
@@ -8,23 +8,17 @@ amountVal = 0.1;                                    %Anzahl der Validierungsdate
 amountTest = 0.4;                                   %Anzahl der Testdaten
 
 % Einlesen der erkannten Schilder
-imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
+imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');
 
-% 50% der Bilder zum Trainieren, 10% zum Validieren, 40% zum Testen
-[trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
-
-% laden des vortrainierten Netzes
+% laden des vortrainierten AlexNetzes
 load netAlexClassification.mat netTransfer;
 
-predictedLabels = classify(netTransfer, validationImageDS);
-accuracy = mean(predictedLabels == validationImageDS.Labels);
+% ----- Anwendung des trainierten Netzwerkes: Gegen den Gesamtdatensatz testen                          
+predictedLabels = classify(netTransfer, imageDS);
+accuracy = mean(predictedLabels == imageDS.Labels);
 
 % ein Bild entnehmen
-[T, info] = read(testImageDS);
+[T, info] = read(imageDS);
 str = cellstr(info.Label);
 image(T);
 classify(netTransfer, T);
-
-% ----- Anwendung des trainierten Netzwerkes: Gegen den Gesamtdatensatz testen                          
-predictedLabels = classify(netTransfer, testImageDS);
-accuracy = mean(predictedLabels == testImageDS.Labels);

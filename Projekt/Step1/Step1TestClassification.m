@@ -14,7 +14,7 @@ imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','f
 [trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
 
 % laden des vortrainierten Netzes
-load netClassification.mat net;
+load 'Neuronale Netze/netClassification.mat' net;
 
 predictedLabels = classify(net, validationImageDS);
 accuracy = mean(predictedLabels == validationImageDS.Labels);

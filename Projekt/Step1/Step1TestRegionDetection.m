@@ -1,5 +1,5 @@
 % ----- Laden des belernten Netzes ----- %
-load netDetectorResNet50.mat detector;
+load 'Neuronale Netze/netDetectorResNet50.mat' detector;
 
 % ----- Laden und randomisieren der Bild-Daten ----- %
 [trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData();

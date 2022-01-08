@@ -44,7 +44,7 @@ options = trainingOptions('sgdm',...
     %'PositiveOverlapRange',[0.6 1]);
 % Trainiertes Netz abspeichern, um es in anderen Skripten verwenden zu
 % können
-save netDetectorResNet50.mat detector;
+save 'Neuronale Netze/netDetectorResNet50.mat' detector;
 
 % ----- quick check/test ----- %
 if showExample

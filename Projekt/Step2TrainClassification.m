@@ -1,29 +1,38 @@
 % Train CNN Netz
-
 close all
 clear 
 
-% Einlesen der erkannten Schilder
-imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
+% Variablen zur Verteilung der Daten
+amountTrain = 0.5;                                  %Anzahl der Trainingsdaten
+amountVal = 0.1;                                    %Anzahl der Validierungsdaten
+amountTest = 0.4;                                   %Anzahl der Testdaten
 
-% 50% der Bilder zum Trainieren, 10% zum Validieren, 40% zum Testen
-[trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, 0.5, 0.1, 0.4,'randomized');
+% Variablen für die Trainingsparameter des Netzes
+initialLearnRate = 0.0005;                          %Defaultwert 0.01
+maxEpochs = 300;                                    %Defaultwert 30
+miniBatchSize = 128;                                %Defaultwert 128
+validationFrequency = 30;                           %Defaultwert 50
+
+% Einlesen der erkannten Schilder
+imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');
+
+% Aufteilung der Bilder in Trainingdatastores, Validationdatastores und Testdatastores
+[trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
 
 % ----- Augmentation
-
-outputSize = [227 227 3]; % [28 28 1];
+outputSize = [227 227 3];
 
 % ----- Augmentation definieren und druchführen
 imageAugmenter = imageDataAugmenter( ...
-    'RandRotation', [-30 30], ...
-      'RandXTranslation', [-4 4], ....
-'RandYTranslation', [-4 4])
+                'RandRotation', [-30 30], ...
+                'RandXTranslation', [-4 4], ....
+                'RandYTranslation', [-4 4]);
 trainingImageAugDS = augmentedImageDatastore(outputSize, trainingImageDS, 'DataAugmentation',imageAugmenter);
 validationImageAugDS = augmentedImageDatastore(outputSize, validationImageDS, 'DataAugmentation',imageAugmenter);
 
 % ----- einfaches DeepLearning Netzwerk definieren
 layers = [
-    imageInputLayer(outputSize) %imageInputLayer([28 28 1])
+    imageInputLayer(outputSize)
 
     convolution2dLayer(3,8,'Padding','same')
     batchNormalizationLayer
@@ -47,12 +56,12 @@ layers = [
 ];
 
 % ----- Training
-
 options = trainingOptions('sgdm',...
-    'InitialLearnRate', 0.0005,...
-    'MaxEpochs',300, ...                    
-    'ValidationData', validationImageAugDS,...  % validationImageDS oder validationImageAugDS  ...
-    'ValidationFrequency',30,...
+    'InitialLearnRate', initialLearnRate,...
+    'MaxEpochs',maxEpochs, ...                    
+    'MiniBatchSize',miniBatchSize,...
+    'ValidationData', validationImageAugDS,...  % validationImageDS oder validationImageAugDS
+    'ValidationFrequency',validationFrequency,...
     'Verbose',false,...
     'Plots','training-progress');
 

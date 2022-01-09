@@ -32,9 +32,9 @@ amountTest = 0.4;                                   %Anzahl der Testdaten
 % ----- Auswahl des Datensatzes ----- %
 if ~useFoundSigns
     % Einlesen der Schilder aus dem Datastore
+    run('Funktionen\resizeImages.m')
     imageDS = imageDatastore(pathDS,'IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
     [trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
-
 else
     % Einlesen der erkannten Schilder
     testImageDS = imageDatastore('SignsFound');

@@ -29,7 +29,7 @@ addpath 'Neuronale_Netze';
 % ----- Testen des ResNet50 ----- %
 if exist('Neuronale_Netze/netDetectorResNet50.mat','file')
    Step2TestRegionDetection
-   run('Funktionen\resizeImages.m')
+   % run('Funktionen\resizeImages.m')
 else
     disp('Error: Das Neuronale Netz ''netDetectorResNet50.mat'' wurde nicht gefunden');
     return
@@ -37,7 +37,7 @@ end
 
 % ----- Testen des AlexNet ----- % 
 
-if (exist('SignsFound','dir') && exist('Neuronale_Netze/netClassification.mat','file'))
+if (exist('Neuronale_Netze/netClassification.mat','file'))
    Step2TestClassification
 else
     disp('Error: Das Neuronale Netz ''netClassification.mat'' wurde nicht gefunden');

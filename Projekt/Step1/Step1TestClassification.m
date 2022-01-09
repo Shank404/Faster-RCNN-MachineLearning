@@ -20,7 +20,7 @@ close all
 clear
 
 % ----- Nutzung der erkannten Daten des FRCNN ----- %
-useFoundSigns = true;
+useFoundSigns = false;
 
 % ----- Variablen zur Verteilung der Daten ----- %
 amountTrain = 0.5;                                  %Anzahl der Trainingsdaten
@@ -47,19 +47,14 @@ predictedLabels = classify(net, testImageDS);
 
 % ----- Ausgabe der ermittelten Präzision ----- %  
 if useFoundSigns
-    imageDS.Labels = predictedLabels;
+    testImageDS.Labels = predictedLabels;
 else
-    accuracy = mean(predictedLabels == imageDS.Labels)
+    fprintf("Die Accuracy unseres Netzes bei unseren Trainingsdaten:",0);
+    accuracy = mean(predictedLabels == testImageDS.Labels)
 end
 
-% ----- Beispielhafte Ausgabe eines Datenpunktes inkl. BoundingBox ----- %
-[T, info] = read(imageDS);
+% ----- Beispielhafte Ausgabe eines Schildes ----- %
+[T, info] = read(testImageDS);
 str = cellstr(info.Label);
 image(T);
 classify(net, T);
-
-% ----- Anwendung des trainierten Netzwerkes: Gegen den Gesamtdatensatz testen ----- %
-if ~useFoundSigns
-    predictedLabels = classify(net, imageDS);
-    accuracy = mean(predictedLabels == imageDS.Labels)
-end

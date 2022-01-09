@@ -6,13 +6,13 @@
 % Michael Sievers - 690593
 % Nico Isheim - 690222
 %------------------------------------------------------------------------%
-%  TRAINING & TESTING - ResNet50 (Region Detection) + CNN (Classification)
+%  	 TESTING - ResNet50 (Region Detection) + CNN (Classification)
 %------------------------------------------------------------------------%
 % Hier befindet sich das hintereinander geschaltete Skript.
-% Nach dem Start wird zuerst das ResNet50 (Region Detection) trainiert und getestet,
-% die erkannten Datenpunkte werden dann gesammelt und an das CNN (Classification)
-% übergeben. Doch zuvor wird das CNN noch trainiert, und im Anschluss mit
-% den übergebenen Datenpunkten getestet.
+% Nach dem Start wird zuerst das ResNet50 (Region Detection) getestet,
+% die erkannten Datenpunkte werden dann gespeichert.
+% Im Anschluss wird das trainierte CNN (Classification) ausgeführt um die 
+% Schilder zu klassifizieren.
 %------------------------------------------------------------------------%
 
 clear;
@@ -20,26 +20,19 @@ close all;
 
 % ----- Hinzufügen der Arbeitspfade ----- %
 addpath Step1;
-
-% ----- Training des ResNet50 ----- % 
-Step1TrainRegionDetection
-%pause(3)    % Puffer zum Speichern der Datei
+addpath Neuronale_Netze;
 
 % ----- Testen des des ResNet50 ----- %
 if exist('Neuronale_Netze/netDetectorResNet50.mat','file')
-   Step1TestRegionDetection
+    Step1TestRegionDetection
+    run('Funktionen\resizeImages.m')
 else
     disp('Error: Das Neuronale Netz ''netDetectorResNet50.mat'' wurde nicht gefunden');
     return
 end
 
-% ----- Training des CNN ----- % 
-Step1TrainClassification
-pause(3)    % Puffer zum Speichern der Datei
+% ----- Testen des CNN ----- %
 
-run('Funktionen\resizeImages.m')
-
-% ----- Testen des CNN ----- % 
 if (exist('SignsFound','dir') && exist('Neuronale_Netze/netClassification.mat','file'))
    Step1TestClassification
 else

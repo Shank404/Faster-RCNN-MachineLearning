@@ -18,6 +18,7 @@ clear;
 close all;
 
 addpath Step2;
+addpath "Neuronale Netze";
 % --- Trainieren des Region Detection Netzwerks (zum Finden der Schilder im
 % Bild)
 Step2TrainRegionDetection

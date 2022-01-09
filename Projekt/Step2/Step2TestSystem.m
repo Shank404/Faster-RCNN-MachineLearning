@@ -6,12 +6,13 @@
 % Michael Sievers - 690593
 % Nico Isheim - 690222
 %------------------------------------------------------------------------%
-%     TESTING - ResNet50 (Region Detection) + AlexNet (Classification)
+%  TRAINING & TESTING - ResNet50 (Region Detection) + AlexNet (Classification)
 %------------------------------------------------------------------------%
 % Hier befindet sich das hintereinander geschaltete Skript.
-% Nach dem Start wird zuerst das ResNet50 (Region Detection) getestet,
+% Nach dem Start wird zuerst das ResNet50 (Region Detection) trainiert und getestet,
 % die erkannten Datenpunkte werden dann gesammelt und an das AlexNet (Classification)
-% übergeben. Dort werden dann die einzelnen Bilder klassifiziert.
+% übergeben. Doch zuvor wird das AlexNet noch trainiert, und im Anschluss mit
+% den übergebenen Datenpunkten getestet.
 %------------------------------------------------------------------------%
 
 clear;

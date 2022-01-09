@@ -6,7 +6,7 @@
 % Michael Sievers - 690593
 % Nico Isheim - 690222
 %------------------------------------------------------------------------%
-%                    TRAIN-REGION DETECTION
+%                    TRAINING-REGION DETECTION
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das ResNet50 belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der

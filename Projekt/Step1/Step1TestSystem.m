@@ -1,6 +1,7 @@
 clear;
 close all;
 
+addpath Step1;
 % --- Trainieren des Region Detection Netzwerks (zum Finden der Schilder im
 % Bild)
 Step1TrainRegionDetection

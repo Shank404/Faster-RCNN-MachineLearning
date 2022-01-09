@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 % Gruppe 2
 % Fabian Beckdorf - 690047
 % Jacob Prütz - 690043
@@ -18,7 +17,7 @@
 
 run Step2TestRegionDetection.m
 run Step2TestClassification.m
-=======
+
 clear;
 close all;
 
@@ -51,4 +50,3 @@ else
     disp('Error: Das Neuronale Netz ''netClassification.mat'' wurde nicht gefunden');
     return
 end
->>>>>>> 0e3c262bec5ac5f6578a8bc74aaa6574432c264c

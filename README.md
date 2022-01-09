@@ -16,9 +16,9 @@ We used a technique called transfer learning in which we relearned the last thre
 With this we optimized accuracy of our deep learning network significantly.
 
 ## 1. Faster RCNN (ResNet50) + simple CNN
-### ResNet50 => 73% accuracy
-### CNN =>      90.87% accuracy
+#### ResNet50 => 73% accuracy
+#### CNN =>      90.87% accuracy
 
 ## 2. Faster RCNN (ResNet50) + AlexNet
-### ResNet50 => 73% accuracy
-### AlexNet =>  98.87% accuracy
+#### ResNet50 => 73% accuracy
+#### AlexNet =>  98.87% accuracy

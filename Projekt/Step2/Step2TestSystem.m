@@ -17,15 +17,15 @@
 clear;
 close all;
 
+% ----- Hinzufügen der Arbeitspfade ----- %
 addpath Step2;
 addpath "Neuronale Netze";
-% --- Trainieren des Region Detection Netzwerks (zum Finden der Schilder im
-% Bild)
+
+% ----- Training des ResNet50 ----- % 
 Step2TrainRegionDetection
 %pause(3)    % Puffer zum Speichern der Datei
 
-% --- Testen des Region Detection Netzwerks (zum Finden der Schilder im
-% Bild)
+% ----- Testen des des ResNet50 ----- %
 if exist('Neuronale Netze/netDetectorResNet50.mat','file')
    Step2TestRegionDetection
 else
@@ -33,14 +33,12 @@ else
     return
 end
 
-% --- Trainieren des Classification Netzwerks (zum Identifizieren der 
-% gefundenen Schilder)
+% ----- Training des AlexNet ----- % 
 Step2TrainClassification
 pause(3)    % Puffer zum Speichern der Datei
-
 run('Funktionen\resizeImages.m')
-% --- Testen des Classification Netzwerks (zum Finden der Schilder im
-% Bild)
+
+% ----- Testen des AlexNet ----- % 
 if (exist('SignsFound','dir') && exist('Neuronale Netze/netClassification.mat','file'))
    Step2TestClassification
 else

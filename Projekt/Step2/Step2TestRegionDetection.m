@@ -11,15 +11,15 @@
 % Mithilfe dieses Skriptes wird das ResNet50 getestet.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
 % Straßenverkehrsschilder (Testmenge). Im Anschluss werden die erkannten
-% Schilder im Ordner "SignsFound" hinterlegt zur weiteren Verarbeitung gesichert.
+% Schilder im Ordner "SignsFound" zur weiteren Verarbeitung hinterlegt.
 %------------------------------------------------------------------------%
 
 % ----- Laden des belernten Netzes ----- %
 load netDetectorResNet50.mat detector;
 
 % ----- Laden und randomisieren der Bild-Daten ----- %
-[trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData();
 inputSize = [448 448 3];    % => nach Rücksprache mit Aschmoneit
+[trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData(inputSize);
 
 % ----- Anpassen des Test-Daten-Datastore ----- %
 testDataDS = transform(testDataDS,@(data)preprocessData(data,inputSize));

@@ -9,10 +9,15 @@
 %    TESTING - ResNet50 (Region Detection) + AlexNet (Classification)
 %------------------------------------------------------------------------%
 % Hier befindet sich das hintereinander geschaltete Skript.
-% Nach dem Start wird das ResNet50 (Region Detection) getestet,
-% die erkannten Datenpunkte werden dann gespeichert
-% und mit dem AlexNet (Classification) klassifiziert.
+% Nach dem Start wird zuerst das ResNet50 (Region Detection) getestet,
+% die erkannten Datenpunkte werden dann gespeichert.
+% Im Anschluss wird das AlexNet (Classification) ausgeführt um die 
+% Schilder zu klassifizieren.
 %------------------------------------------------------------------------%
+% Der Pfad zum DataStore für die Region Detection wird im Skript
+% LoadAndRandomizeData (Line 3) festgelegt.
+% Der Pfad zum DataStore für die Classification wird im Skript
+% Step2TestRegionDetection (Line 23) festgelegt.
 
 clear;
 close all;

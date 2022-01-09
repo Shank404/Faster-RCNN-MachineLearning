@@ -14,6 +14,10 @@
 % Im Anschluss wird das trainierte CNN (Classification) ausgeführt um die 
 % Schilder zu klassifizieren.
 %------------------------------------------------------------------------%
+% Der Pfad zum DataStore für die Region Detection ist im Skript
+% LoadAndRandomizeData (Line 3) festgelegt.
+% Der Pfad zum DataStore für die Classification ist im Skript
+% Step1TestRegionDetection (Line 23) festgelegt.
 
 clear;
 close all;

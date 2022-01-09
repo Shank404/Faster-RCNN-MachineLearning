@@ -19,6 +19,8 @@
 close all
 clear
 
+% Pfad zum DataStore
+pathDS = 'SignsCutted';
 % ----- Nutzung der erkannten Daten des FRCNN ----- %
 useFoundSigns = false;
 
@@ -30,7 +32,7 @@ amountTest = 0.4;                                   %Anzahl der Testdaten
 % ----- Auswahl des Datensatzes ----- %
 if ~useFoundSigns
     % Einlesen der Schilder aus dem Datastore
-    imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
+    imageDS = imageDatastore(pathDS,'IncludeSubfolders',true,'LabelSource','foldernames');  % create DataStore
     [trainingImageDS, validationImageDS, testImageDS] = splitEachLabel(imageDS, amountTrain, amountVal, amountTest,'randomized');
 
 else

@@ -1,9 +1,10 @@
+addpath Funktionen;
 % ----- Laden des belernten Netzes ----- %
 load 'Neuronale Netze/netDetectorResNet50.mat' detector;
 
-% ----- Laden und randomisieren der Bild-Daten ----- %
-[trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData();
 inputSize = [448 448 3];    % => nach Rücksprache mit Aschmoneit
+% ----- Laden und randomisieren der Bild-Daten ----- %
+[trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData(inputSize);
 
 % ----- Anpassen des Test-Daten-Datastore ----- %
 testDataDS = transform(testDataDS,@(data)preprocessData(data,inputSize));

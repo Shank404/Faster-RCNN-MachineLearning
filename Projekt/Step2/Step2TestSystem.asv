@@ -11,7 +11,7 @@
 % Hier befindet sich das hintereinander geschaltete Skript.
 % Nach dem Start wird zuerst das ResNet50 (Region Detection) getestet,
 % die erkannten Datenpunkte werden dann gesammelt und an das AlexNet (Classification)
-% übergeben. Dort werden dann die einzelnen Bilder klassifiziert.
+% übergeben. D
 %------------------------------------------------------------------------%
 
 

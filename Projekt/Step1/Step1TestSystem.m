@@ -26,7 +26,7 @@ Step1TrainRegionDetection
 %pause(3)    % Puffer zum Speichern der Datei
 
 % ----- Testen des des ResNet50 ----- %
-if exist('Neuronale Netze/netDetectorResNet50.mat','file')
+if exist('Neuronale_Netze/netDetectorResNet50.mat','file')
    Step1TestRegionDetection
 else
     disp('Error: Das Neuronale Netz ''netDetectorResNet50.mat'' wurde nicht gefunden');
@@ -40,7 +40,7 @@ pause(3)    % Puffer zum Speichern der Datei
 run('Funktionen\resizeImages.m')
 
 % ----- Testen des CNN ----- % 
-if (exist('SignsFound','dir') && exist('Neuronale Netze/netClassification.mat','file'))
+if (exist('SignsFound','dir') && exist('Neuronale_Netze/netClassification.mat','file'))
    Step1TestClassification
 else
     disp('Error: Das Neuronale Netz ''netClassification.mat'' wurde nicht gefunden');

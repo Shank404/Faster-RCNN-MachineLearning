@@ -26,7 +26,7 @@ amountTest = 0.4;                                   %Anzahl der Testdaten
 imageDS = imageDatastore('SignsCutted','IncludeSubfolders',true,'LabelSource','foldernames');
 
 % ----- Laden des trainierten Netzes----- %
-load 'Neuronale Netze\netAlexClassification.mat' netTransfer;
+load 'Neuronale_Netze\netAlexClassification.mat' netTransfer;
 
 % ----- Anwendung des trainierten Netzes ----- %                         
 predictedLabels = classify(netTransfer, imageDS);

@@ -1,7 +1,7 @@
 function [trainingDataDS,validationDataDS, testDataDS, testDataTbl, signDatasetTbl] = LoadAndRandomizeData(inputSize)
 % ----- Laden der Daten
 imageDS = imageDatastore('Pictures_1024_768',"IncludeSubfolders",true,"LabelSource","foldernames");
-dataVec = load('Neuronale Netze\signDatasetGroundTruth.mat');  % 
+dataVec = load('Neuronale_Netze\signDatasetGroundTruth.mat');  % 
 signDatasetTbl = dataVec.signDataset;  % 1125*2 table
 % ----- Aufteilung der Daten => 60% Training, 10% Validierung, 30% Testen  
 rng(0)

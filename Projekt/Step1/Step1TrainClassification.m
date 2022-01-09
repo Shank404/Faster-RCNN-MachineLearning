@@ -82,4 +82,4 @@ options = trainingOptions('sgdm',...
 
 % ----- Training des Netzes und anschließende Sicherung ----- %
 net = trainNetwork(trainingImageAugDS,layers,options);  % trainingImageDS oder trainingImageAugDS
-save 'Neuronale Netze/netClassification.mat' net;
+save 'Neuronale_Netze/netClassification.mat' net;

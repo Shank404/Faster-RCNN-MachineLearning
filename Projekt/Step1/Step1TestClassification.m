@@ -39,7 +39,7 @@ else
 end
 
 % ----- Laden des trainierten Netzes----- %
-load 'Neuronale Netze/netClassification.mat' net;
+load 'Neuronale_Netze/netClassification.mat' net;
 inputSize = [227, 227, 3]; %Skalierung für das Netzwerk
 
 % ----- Anwendung des trainierten Netzes ----- %                         

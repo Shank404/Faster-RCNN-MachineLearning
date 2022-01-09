@@ -71,7 +71,7 @@ options = trainingOptions('sgdm',...
 
 % ----- Training des Netzes und anschließende Sicherung ----- %
 netTransfer = trainNetwork(trainingImageAugDS,layers,options);
-save 'Neuronale Netze\netAlexClassification.mat' netTransfer;
+save 'Neuronale_Netze\netAlexClassification.mat' netTransfer;
 
 % ----- Berechnung und Ausgabe der erreichten Präzision ----- %
 YPred = classify(netTransfer, validationImageAugDS);

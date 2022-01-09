@@ -43,6 +43,8 @@ disp('Start storing images');
 basePath = 'SignsFound';
 if ~exist(basePath,'dir')
     mkdir(basePath);
+else
+    delete(strcat(basePath,'\*'));
 end
 for i = 1:length(testDataTbl.imageFilename)-1
     img = imread(testDataTbl.imageFilename{i});

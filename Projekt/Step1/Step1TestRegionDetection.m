@@ -21,7 +21,7 @@ close all
 addpath Funktionen;
 
 % ----- Laden des belernten Netzes ----- %
-load 'Neuronale Netze/netDetectorResNet50.mat' detector;
+load 'Neuronale_Netze/netDetectorResNet50.mat' detector;
 inputSize = [448 448 3];
 
 % ----- Laden und randomisieren der Bild-Daten ----- %

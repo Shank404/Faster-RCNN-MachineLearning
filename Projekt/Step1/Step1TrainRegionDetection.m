@@ -56,7 +56,7 @@ options = trainingOptions('sgdm',...
 
 % ----- Trainieren des Netzes und anschließendes sichern ----- %
 [detector, info] = trainFasterRCNNObjectDetector(trainingDataDS,lgraph,options);
-save 'Neuronale Netze/netDetectorResNet50.mat' detector;
+save 'Neuronale_Netze/netDetectorResNet50.mat' detector;
 
 % ----- Ausgabe eines beispielhaften Datenpunktes inkl. der BoundingBox ----- %
 if showExample

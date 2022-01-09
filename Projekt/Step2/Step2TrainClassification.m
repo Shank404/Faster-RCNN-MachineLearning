@@ -6,10 +6,12 @@
 % Michael Sievers - 690593
 % Nico Isheim - 690222
 %------------------------------------------------------------------------%
+%                    TRAINING-CLASSIFICATION
+%------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das AlexNet belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder. Im Anschluss kann ein besipielhaft belernter
-% Datenpunkt ausgegeben werden.
+% Straßenverkehrsschilder. Im Anschluss wird die erreichte Präzision
+% des Netzes ausgegeben.
 %------------------------------------------------------------------------%
 
 close all

@@ -6,6 +6,8 @@
 % Michael Sievers - 690593
 % Nico Isheim - 690222
 %------------------------------------------------------------------------%
+%                    TEST-REGION DETECTION
+%------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das ResNet50 getestet.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
 % Straßenverkehrsschilder (Testmenge). Im Anschluss werden die erkannten

@@ -36,7 +36,7 @@ for i = 1:length(testDataTbl.imageFilename)-1
     for j = 1:rowBBoxes(1)
         signImg = imcrop(img, [ bboxes(1*j) bboxes(2*j) bboxes(3*j) bboxes(4*j) ] );
         if ~isempty(signImg)
-            imwrite(signImg, fullfile(basePath, strcat(num2str(i),'_',num2str(j),'_', replace(replace(testDataTbl.imageFilename{i},'Pictures_1024_768',''),'\',''), '.jpg') ));
+            imwrite(signImg, fullfile(basePath, strcat(num2str(i),'_',num2str(j),'_', replace(replace(testDataTbl.imageFilename{i},'Pictures_1024_768',''),'\','')) ));
         end
     end
 end

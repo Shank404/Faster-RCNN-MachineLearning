@@ -71,6 +71,6 @@ options = trainingOptions('sgdm',...
 netTransfer = trainNetwork(trainingImageAugDS,layers,options);
 save 'Neuronale Netze\netAlexClassification.mat' netTransfer;
 
-% ----- Berechnung und Ausgabe der erreichten Präzision ----- %
+% ----- Berechnung der ----- %
 YPred = classify(netTransfer, validationImageAugDS);
 accuracy = mean(YPred == validationImageDS.Labels)

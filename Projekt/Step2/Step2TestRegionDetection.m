@@ -1,3 +1,17 @@
+% Gruppe 2
+% Fabian Beckdorf - 690047
+% Jacob Prütz - 690043
+% Ali Reza Teimoury - 690065
+% Julian Müller - 690018
+% Michael Sievers - 690593
+% Nico Isheim - 690222
+%------------------------------------------------------------------------%
+% Mithilfe dieses Skriptes wird das ResNet50 getestet.
+% Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
+% Straßenverkehrsschilder (Testmenge). Im Anschluss werden die erkannten
+% Schilder im Ordner "SignsFound" hinterlegt zur weiteren Verarbeitung gesichert.
+%------------------------------------------------------------------------%
+
 % ----- Laden des belernten Netzes ----- %
 load netDetectorResNet50.mat detector;
 

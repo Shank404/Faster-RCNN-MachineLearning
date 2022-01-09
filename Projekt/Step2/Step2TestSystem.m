@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 % Gruppe 2
 % Fabian Beckdorf - 690047
 % Jacob Prütz - 690043
@@ -17,3 +18,37 @@
 
 run Step2TestRegionDetection.m
 run Step2TestClassification.m
+=======
+clear;
+close all;
+
+addpath Step2;
+% --- Trainieren des Region Detection Netzwerks (zum Finden der Schilder im
+% Bild)
+Step2TrainRegionDetection
+%pause(3)    % Puffer zum Speichern der Datei
+
+% --- Testen des Region Detection Netzwerks (zum Finden der Schilder im
+% Bild)
+if exist('Neuronale Netze/netDetectorResNet50.mat','file')
+   Step2TestRegionDetection
+else
+    disp('Error: Das Neuronale Netz ''netDetectorResNet50.mat'' wurde nicht gefunden');
+    return
+end
+
+% --- Trainieren des Classification Netzwerks (zum Identifizieren der 
+% gefundenen Schilder)
+Step2TrainClassification
+pause(3)    % Puffer zum Speichern der Datei
+
+run('Funktionen\resizeImages.m')
+% --- Testen des Classification Netzwerks (zum Finden der Schilder im
+% Bild)
+if (exist('SignsFound','dir') && exist('Neuronale Netze/netClassification.mat','file'))
+   Step2TestClassification
+else
+    disp('Error: Das Neuronale Netz ''netClassification.mat'' wurde nicht gefunden');
+    return
+end
+>>>>>>> 0e3c262bec5ac5f6578a8bc74aaa6574432c264c

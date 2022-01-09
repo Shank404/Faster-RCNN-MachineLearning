@@ -11,7 +11,7 @@
 %------------------------------------------------------------------------%
 %                    TRAINING-CLASSIFICATION
 %------------------------------------------------------------------------%
-% Mithilfe dieses Skriptes wird das AlexNet belernt.
+% Mithilfe dieses Skriptes wird das CNN belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
 % Straßenverkehrsschilder.
 %------------------------------------------------------------------------%

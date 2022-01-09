@@ -1,8 +1,29 @@
+% Gruppe 2
+% Fabian Beckdorf - 690047
+% Jacob Prütz - 690043
+% Ali Reza Teimoury - 690065
+% Julian Müller - 690018
+% Michael Sievers - 690593
+% Nico Isheim - 690222
+%------------------------------------------------------------------------%
+%                    TESTING-REGION DETECTION
+%------------------------------------------------------------------------%
+% Mithilfe dieses Skriptes wird das ResNet50 getestet.
+% Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
+% Straßenverkehrsschilder (Testmenge). Im Anschluss werden die erkannten
+% Schilder im Ordner "SignsFound" hinterlegt zur weiteren Verarbeitung gesichert.
+%------------------------------------------------------------------------%
+
+clear
+close all
+
+% ----- Hinzufügen der Arbeitspfade ----- %
 addpath Funktionen;
+
 % ----- Laden des belernten Netzes ----- %
 load 'Neuronale Netze/netDetectorResNet50.mat' detector;
+inputSize = [448 448 3];
 
-inputSize = [448 448 3];    % => nach Rücksprache mit Aschmoneit
 % ----- Laden und randomisieren der Bild-Daten ----- %
 [trainingDataDS,validationDataDS,testDataDS,testDataTbl] = LoadAndRandomizeData(inputSize);
 

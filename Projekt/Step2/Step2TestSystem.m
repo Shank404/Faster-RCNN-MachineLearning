@@ -14,9 +14,6 @@
 % übergeben. Dort werden dann die einzelnen Bilder klassifiziert.
 %------------------------------------------------------------------------%
 
-run Step2TestRegionDetection.m
-run Step2TestClassification.m
-
 clear;
 close all;
 

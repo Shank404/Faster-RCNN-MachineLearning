@@ -26,7 +26,7 @@ close all;
 addpath Step1;
 addpath Neuronale_Netze;
 
-% ----- Testen des des ResNet50 ----- %
+% ----- Testen des ResNet50 ----- %
 if exist('Neuronale_Netze/netDetectorResNet50.mat','file')
     Step1TestRegionDetection
 else

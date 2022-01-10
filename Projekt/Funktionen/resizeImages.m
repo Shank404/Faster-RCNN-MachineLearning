@@ -5,7 +5,7 @@
 % 15.12.2019, 25.12.2019  tas
 %
 
-clear all; close all;
+clear; close all;
 
 %%%%%%%%%%%%%% Parameter %%%%%%%%%%%%%%%%%
 keyStop = false

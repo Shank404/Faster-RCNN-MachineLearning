@@ -10,8 +10,8 @@
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das ResNet50 getestet.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder (Testmenge). Im Anschluss werden die erkannten
-% Schilder im Ordner "SignsFound" zur weiteren Verarbeitung hinterlegt.
+% Straßenverkehrsschilder (Testmenge + Validierungsmenge). Im Anschluss
+% werden die erkannten Schilder im Ordner "SignsFound" zur weiteren Verarbeitung hinterlegt.
 %------------------------------------------------------------------------%
 
 % ----- Laden des belernten Netzes ----- %

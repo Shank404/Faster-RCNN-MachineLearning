@@ -13,7 +13,7 @@
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das CNN belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder.
+% Straßenverkehrsschilder (Trainingsmenge + Validierungsmenge).
 %------------------------------------------------------------------------%
 
 close all

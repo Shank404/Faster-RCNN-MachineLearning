@@ -10,7 +10,7 @@
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das CNN getestet.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder (Testmenge). Im Anschluss wird bespielhaft
+% Straßenverkehrsschilder (Testmenge + Validierungsmenge). Im Anschluss wird bespielhaft
 % ein Datenpunkt mit BoundingBox, und der zutreffenden Wahrscheinlichkeit ausgegeben.
 % Sollten die Daten vewendet werden welche vom ResNet50 erkannt wurden,
 % muss der boolean useFoundSigns auf true gesetzt werden.

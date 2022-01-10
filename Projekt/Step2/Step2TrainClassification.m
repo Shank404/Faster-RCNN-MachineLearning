@@ -10,8 +10,8 @@
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das AlexNet belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder. Im Anschluss wird die erreichte Präzision
-% des Netzes ausgegeben.
+% Straßenverkehrsschilder (Trainingsmenge + Validierungsmenge). Im Anschluss 
+% wird die erreichte Präzision des Netzes ausgegeben.
 %------------------------------------------------------------------------%
 
 close all

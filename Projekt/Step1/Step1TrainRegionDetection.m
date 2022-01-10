@@ -10,8 +10,8 @@
 %------------------------------------------------------------------------%
 % Mithilfe dieses Skriptes wird das ResNet50 belernt.
 % Hierbei nutzen wir den uns zur Verfügung gestellten Datensatz, der
-% Straßenverkehrsschilder. Im Anschluss kann ein besipielhaft belernter
-% Datenpunkt ausgegeben werden.
+% Straßenverkehrsschilder (Trainingsmenge + Validierungsmenge. Im 
+% Anschluss kann ein besipielhaft belernter Datenpunkt ausgegeben werden.
 %------------------------------------------------------------------------%
 
 close all
